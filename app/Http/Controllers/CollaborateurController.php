@@ -24,7 +24,7 @@ class collaborateurController extends Controller
             'region' => 'required|string',
             'ville' => 'required|string',
             'pays' => 'required|string',
-            'telephone' => 'required|string',
+            'telephone' => 'required|string|unique',
             'portable' => 'required|string',
             'societe_id' => 'required|numeric|exists:societes,id',
             'service_id' => 'required|numeric|exists:services,id',

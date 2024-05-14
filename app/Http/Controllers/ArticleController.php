@@ -12,38 +12,46 @@ class ArticleController extends Controller
 
     public function store(Request $request)
     {
-       // Validation des données
-$request->validate([
-    'suivi_stock' => 'required|string',
-    'prix_achat' => 'required|integer',
-    'dernier_prix_achat' => 'required|integer',
-    'famille_id' => 'required|integer',
-    'depot_id' => 'required|integer',
-    'id_fournisseur' => 'required|integer',
-    'reference' => 'nullable|string',
-    'designation' => 'nullable|string',
-    'unite_achat_vente' => 'nullable|string',
-]);
+        // Validation des données
+        $request->validate([
+            'suivi_stock' => 'required|string',
+            'prix_achat' => 'required|integer',
+            'dernier_prix_achat' => 'required|integer',
+            'famille_id' => 'required|integer',
+            'depot_id' => 'required|integer',
+            'id_fournisseur' => 'required|integer',
+            'reference' => 'nullable|string',
+            'designation' => 'nullable|string',
+            'unite_achat_vente' => 'nullable|string',
+        ]);
 
-// Création de l'article
-$article = new Article;
-$article->suivi_stock = $request->suivi_stock;
-$article->prix_achat = $request->prix_achat;
-$article->dernier_prix_achat = $request->dernier_prix_achat;
-$article->famille_id = $request->famille_id;
-$article->depot_id = $request->depot_id;
-$article->id_fournisseur = $request->id_fournisseur;
-$article->reference = $request->reference;
-$article->designation = $request->designation;
-$article->unite_achat_vente = $request->unite_achat_vente;
+        // Vérification si la référence existe déjà
+        if ($request->reference) {
+            $existingArticle = Article::where('reference', $request->reference)->first();
+            if ($existingArticle) {
+                return response()->json(['error' => 'La référence existe déjà'], 400);
+            }
+        }
 
-// Enregistrement dans la base de données
-$article->save();
+        // Création de l'article
+        $article = new Article;
+        $article->suivi_stock = $request->suivi_stock;
+        $article->prix_achat = $request->prix_achat;
+        $article->dernier_prix_achat = $request->dernier_prix_achat;
+        $article->famille_id = $request->famille_id;
+        $article->depot_id = $request->depot_id;
+        $article->id_fournisseur = $request->id_fournisseur;
+        $article->reference = $request->reference;
+        $article->designation = $request->designation;
+        $article->unite_achat_vente = $request->unite_achat_vente;
 
-// Retourner une réponse appropriée
-return response()->json(['message' => 'Article inséré avec succès'], 201);
+        // Enregistrement dans la base de données
+        $article->save();
 
+        // Retourner une réponse appropriée
+        return response()->json(['message' => 'Article inséré avec succès'], 201);
     }
+
 
 
 
@@ -89,26 +97,28 @@ return response()->json(['message' => 'Article inséré avec succès'], 201);
         }
 
         $request->validate([
-            'nom' => 'required|string',
             'suivi_stock' => 'required|string',
-            'prix_achat' => 'required|numeric',
-            'dernier_prix_achat' => 'required|numeric',
-            'famille_id' => 'required|numeric',
-            'depot_id' => 'required|numeric',
-            'id_fournisseur' => 'required|numeric',
-
+            'prix_achat' => 'required|integer',
+            'dernier_prix_achat' => 'required|integer',
+            'famille_id' => 'required|integer',
+            'depot_id' => 'required|integer',
+            'id_fournisseur' => 'required|integer',
+            'reference' => 'nullable|string',
+            'designation' => 'nullable|string',
+            'unite_achat_vente' => 'nullable|string',
         ]);
 
-
-
+        // Création de l'article
         // $article = new Article;
-        $article->nom = $request->nom;
         $article->suivi_stock = $request->suivi_stock;
         $article->prix_achat = $request->prix_achat;
         $article->dernier_prix_achat = $request->dernier_prix_achat;
         $article->famille_id = $request->famille_id;
         $article->depot_id = $request->depot_id;
         $article->id_fournisseur = $request->id_fournisseur;
+        $article->reference = $request->reference;
+        $article->designation = $request->designation;
+        $article->unite_achat_vente = $request->unite_achat_vente;
 
 
         $article->save();
@@ -153,5 +163,12 @@ return response()->json(['message' => 'Article inséré avec succès'], 201);
         }
         $article->delete();
         return response()->json(['message' => 'article supprimée avec succès'], 200);
+    }
+
+
+    public function countFamilles()
+    {
+        $count = Article::count();
+        return response()->json($count);
     }
 }

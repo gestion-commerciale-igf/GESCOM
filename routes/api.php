@@ -47,8 +47,10 @@ Route::prefix("famille")->group(function () {
     Route::delete('/delete/{id}', [FamilleController::class, 'supprimer']);
     Route::get('findnom/{nom}', [FamilleController::class, 'findByName']);
     Route::get('find/{id}', [FamilleController::class, 'findByid']);
-
+    Route::get('list-articles/{id}', [FamilleController::class, 'getArticlesByFamille']);
+    Route::get('/count', [FamilleController::class, 'countFamilles']);
 });
+
 
 
 
@@ -60,7 +62,7 @@ Route::prefix("fournisseur")->group(function () {
     Route::delete('delete/{id}', [FournisseurController::class, 'supprimer']);
     Route::get('findnom/{nom}', [FournisseurController::class, 'findByName']);
     Route::get('find/{id}', [FournisseurController::class, 'findByid']);
-
+    Route::get('/count', [FournisseurController::class, 'countFournisseur']);
 });
 
 
@@ -107,6 +109,7 @@ Route::prefix("article")->group(function () {
     Route::delete('delete/{id}', [ArticleController::class, 'supprimer']);
     Route::get('findnom/{nom}', [ArticleController::class, 'findByName']);
     Route::get('find/{id}', [ArticleController::class, 'findByid']);
+    Route::get('/count', [ArticleController::class, 'countFournisseur']);
 
 });
 
@@ -156,6 +159,6 @@ Route::prefix("client")->group(function () {
     Route::delete('delete/{id}', [ClientController::class, 'supprimer']);
     Route::get('findnom/{nom}', [ClientController::class, 'findByName']);
     Route::get('find/{id}', [ClientController::class, 'findByid']);
-
+    Route::get('/count', [ClientController::class, 'countFournisseur']);
 
 });

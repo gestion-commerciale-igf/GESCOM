@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 
 class DepotController extends Controller
 {
-
     public function store(Request $request)
     {
         // Validation des données
@@ -25,25 +24,30 @@ class DepotController extends Controller
             'email'=> 'required|string',
         ]);
 
-        // Création de la société
-        $depot = new Depot;
-        $depot->nom = $request->nom ?? $depot->nom;
-        $depot->responsable_depot = $request->responsable_depot ?? $depot->responsable_depot;
-        $depot->adresse = $request->adresse ?? $depot->adresse;
-        $depot->complement = $request->complement ?? $depot->complement;
-        $depot->code_postal = $request->code_postal ?? $depot->code_postal;
-        $depot->region = $request->region ?? $depot->region;
-        $depot->ville = $request->ville ?? $depot->ville;
-        $depot->pays = $request->pays ?? $depot->pays;
-        $depot->telephone = $request->telephone ?? $depot->telephone;
-        $depot->email = $request->email ?? $depot->email;
+        // Vérification si le nom existe déjà
+        $existingDepot = Depot::where('nom', $request->nom)->first();
+        if ($existingDepot) {
+            return response()->json(['message' => 'Le nom du dépôt existe déjà'], 400);
+        }
 
+        // Création du dépôt
+        $depot = new Depot;
+        $depot->nom = $request->nom;
+        $depot->responsable_depot = $request->responsable_depot;
+        $depot->adresse = $request->adresse;
+        $depot->complement = $request->complement;
+        $depot->code_postal = $request->code_postal;
+        $depot->region = $request->region;
+        $depot->ville = $request->ville;
+        $depot->pays = $request->pays;
+        $depot->telephone = $request->telephone;
+        $depot->email = $request->email;
 
         // Enregistrement dans la base de données
         $depot->save();
 
         // Retourner une réponse appropriée
-        return response()->json(['message' => 'Depot insérée avec succès'], 201);
+        return response()->json(['message' => 'Dépôt inséré avec succès'], 201);
     }
 
 
@@ -122,6 +126,15 @@ class DepotController extends Controller
     }
 
 
+    public function findByid(Request $request, $id)
+    {
+        $depot = Depot::find($id);
+
+        if (!$depot) {
+            return response()->json(['Message => depot inexistante'], 404);
+        }
+        return response()->json($depot, 200);
+    }
 
 
 

@@ -8,24 +8,35 @@ use Illuminate\Http\Request;
 class ClientController extends Controller
 {
     public function store(Request $request)
-    {
-        // Validation des données
-        $request->validate([
-            'compte_tiers' => 'required|string',
-            'intitule' => 'required|string',
-            'adresse' => 'required|string',
-            'complement' => 'required|string',
-            'region' => 'required|string',
-            'ville' => 'required|string',
-            'pays' => 'required|string',
-            'telephone' => 'required|string',
-            'email' => 'required|string',
-            'code_postal' => 'required|string',
-            'ninea' => 'required|string'
-        ]);
+{
+    // Validation des données
+    $request->validate([
+        'compte_tiers' => 'required|string',
+        'intitule' => 'required|string',
+        'adresse' => 'required|string',
+        'complement' => 'required|string',
+        'region' => 'required|string',
+        'ville' => 'required|string',
+        'pays' => 'required|string',
+        'telephone' => 'required|string',
+        'email' => 'required|string',
+        'code_postal' => 'required|string',
+        'ninea' => 'required|string'
+    ]);
 
+        $existingClient = Client::where('compte_tiers', $request->compte_tiers)->first();
+    if ($existingClient) {
+        return response()->json(['message' => 'Le compte tiers existe déjà'], 400);
+    }            $existingClient = Client::where('telephone', $request->telephone)->first();
+    if ($existingClient) {
+        return response()->json(['message' => 'Le telephone existe déjà'], 400);
+    }
+        $existingClient = Client::where('email', $request->email)->first();
+    if ($existingClient) {
+        return response()->json(['message' => 'Le email existe déjà'], 400);
+    }
 
-// Créer une nouvelle instance du modèle Client
+    // Créer une nouvelle instance du modèle Client
     $client = new Client;
 
     $client->compte_tiers = $request->compte_tiers;
@@ -43,9 +54,10 @@ class ClientController extends Controller
     // Enregistrement dans la base de données
     $client->save();
 
-        // Retourner une réponse appropriée
-        return response()->json(['message' => 'Client(e) inséré(e) avec succès'], 201);
-    }
+    // Retourner une réponse appropriée
+    return response()->json(['message' => 'Client(e) inséré(e) avec succès'], 201);
+}
+
 
 
     public function getClient(){
@@ -131,5 +143,11 @@ class ClientController extends Controller
        }
        $client->delete();
        return response()->json(['message' => 'client supprimée avec succès'], 200);
+    }
+
+    public function countFamilles()
+    {
+        $count = Client::count();
+        return response()->json($count);
     }
 }

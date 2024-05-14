@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Article;
 use App\Models\Famille;
 
 use Illuminate\Http\Request;
@@ -11,13 +12,19 @@ class FamilleController extends Controller
 
     public function store(Request $request)
     {
-                // Validation des données
+        // Validation des données
         $request->validate([
             'code' => 'required|string',
             'intitule' => 'required|string',
             'unite_de_vente' => 'required|string',
             'suivi_stock' => 'required|string'
         ]);
+
+        // Vérification si le code existe déjà
+        $existingFamille = Famille::where('code', $request->code)->first();
+        if ($existingFamille) {
+            return response()->json(['message' => 'Le code existe déjà'], 400);
+        }
 
         // Création de la famille
         $famille = new Famille;
@@ -31,11 +38,7 @@ class FamilleController extends Controller
 
         // Retourner une réponse appropriée
         return response()->json(['message' => 'Famille insérée avec succès'], 201);
-
     }
-
-
-
 
 
     public function getFamille()
@@ -116,5 +119,21 @@ class FamilleController extends Controller
         }
         $famille->delete();
         return response()->json(['message' => 'Famille supprimée avec succès'], 200);
+    }
+
+
+    public function getArticlesByFamille($familleId)
+    {
+        // Rechercher tous les articles ayant l'id de la famille spécifié
+        $articles = Article::where('famille_id', $familleId)->get();
+
+        // Retourner les résultats sous forme de réponse JSON
+        return response()->json($articles);
+    }
+
+    public function countFamilles()
+    {
+        $count = Famille::count();
+        return response()->json($count);
     }
 }
