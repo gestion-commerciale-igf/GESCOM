@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::table('articles', function (Blueprint $table) {
             //
-            // Supprimer la clé étrangère depot_id
-            $table->dropForeign(['depot_id']);
+            // Supprimer la clé étrangère famille_id
+            $table->dropForeign(['famille_id']);
         });
     }
 
@@ -25,8 +25,8 @@ return new class extends Migration
     {
 
         Schema::table('articles', function (Blueprint $table) {
-            // Ajouter à nouveau la clé étrangère depot_id
-            $table->foreign('depot_id')->references('id')->on('depots')->onDelete('cascade');
+            // Ajouter à nouveau la clé étrangère famille_id
+            $table->foreign('famille_id')->references('id')->on('familles')->onDelete('cascade');
         });
     }
 };

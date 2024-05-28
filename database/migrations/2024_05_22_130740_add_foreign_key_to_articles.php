@@ -9,19 +9,22 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('pivot_client_articles', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::table('articles', function (Blueprint $table) {
+            $table->unsignedBigInteger('famille_id');
+            $table->foreign('famille_id')->references('id')->on('familles');
         });
     }
+
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('pivot_client_articles');
+        Schema::table('articles', function (Blueprint $table) {
+            //
+        });
     }
 };

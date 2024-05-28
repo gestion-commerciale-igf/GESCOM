@@ -14,10 +14,11 @@ class FamilleController extends Controller
     {
         // Validation des données
         $request->validate([
+            'type' => 'required|string',
             'code' => 'required|string',
             'intitule' => 'required|string',
-            'unite_de_vente' => 'required|string',
-            'suivi_stock' => 'required|string'
+            'unite_de_vente' => 'nullable|string',
+            'suivi_stock' => 'nullable|string'
         ]);
 
         // Vérification si le code existe déjà
@@ -28,6 +29,7 @@ class FamilleController extends Controller
 
         // Création de la famille
         $famille = new Famille;
+        $famille->type = $request->type;
         $famille->code = $request->code;
         $famille->intitule = $request->intitule;
         $famille->unite_de_vente = $request->unite_de_vente;
